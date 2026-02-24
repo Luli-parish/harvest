@@ -3,12 +3,14 @@ Base Django settings for harvest project.
 Shared by both development and production.
 """
 
+
 from pathlib import Path
 from datetime import timedelta
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = 'django-insecure-r71h(13ndzq&%*m4!dr8z^qqau*4j@+t#pv))iimzjbyc7pny_'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-r71h(13ndzq&%*m4!dr8z^qqau*4j@+t#pv))iimzjbyc7pny_')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -54,11 +56,11 @@ WSGI_APPLICATION = 'harvest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'your_db_name',
-        'USER': 'your_db_user',
-        'PASSWORD': 'your_db_password',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME', 'your_db_name'),
+        'USER': os.environ.get('DB_USER', 'your_db_user'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'your_db_password'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
