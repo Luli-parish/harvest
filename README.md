@@ -9,7 +9,7 @@ harvest/
 ├── backend/              # Django REST API
 │   ├── harvest/          # Django project settings
 │   ├── juvenileharvest/  # Django app (models, views, migrations)
-│   ├── venv/             # Virtual environment
+│   ├── .venv/            # Virtual environment (managed by uv)
 │   ├── manage.py         # Django management script
 │   └── db.sqlite3        # SQLite database
 ├── frontend/             # React application
@@ -25,13 +25,17 @@ harvest/
 
 ### Prerequisites
 - Python 3.10+
-- Virtual environment (included)
+- [uv](https://github.com/astral-sh/uv) (dependency manager)
+
 
 ### Installation & Running
 
 ```bash
 cd backend
-source venv/bin/activate
+uv venv  # (optional, creates .venv if not present)
+source .venv/bin/activate
+uv pip install -r requirements.txt  # Only if you have requirements.txt to migrate
+uv pip install -e .  # Or use uv add <package> to add dependencies
 python manage.py migrate
 python manage.py runserver
 ```
@@ -104,10 +108,11 @@ The app will be available at `http://localhost:3000`.
 
 ## Running Both Servers
 
+
 Terminal 1 (Backend):
 ```bash
 cd backend
-source venv/bin/activate
+source .venv/bin/activate
 python manage.py runserver
 ```
 

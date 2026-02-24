@@ -6,7 +6,7 @@
 - **URL**: http://localhost:8000
 - **Status**: ✅ Running
 - **Port**: 8000
-- **Command**: `cd backend && venv/bin/python manage.py runserver 0.0.0.0:8000`
+- **Command**: `cd backend && source .venv/bin/activate && python manage.py runserver 0.0.0.0:8000`
 
 ### Frontend Server
 - **URL**: http://localhost:3000
@@ -21,7 +21,7 @@
 ### Terminal 1 (Backend):
 ```bash
 cd /Users/akandetomipaul/Documents/Luli/harvest/backend
-source venv/bin/activate
+source .venv/bin/activate
 python manage.py runserver 0.0.0.0:8000
 ```
 
@@ -130,7 +130,7 @@ harvest/
 │   ├── juvenileharvest/  # Django app (models, views, urls)
 │   ├── manage.py
 │   ├── db.sqlite3        # Database
-│   └── venv/             # Python virtual environment
+│   └── .venv/            # Python virtual environment (managed by uv)
 ├── frontend/
 │   ├── src/
 │   │   ├── App.jsx       # Main component
@@ -239,7 +239,7 @@ npm run preview
 - Django 6.0.2
 - Django REST Framework
 - djangorestframework-simplejwt (JWT)
-- SQLite3
+- PostgreSQL
 
 **Frontend:**
 - React 18.2.0
