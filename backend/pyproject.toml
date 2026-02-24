@@ -1,5 +1,5 @@
 [project]
-name = "Harvest Backend"
+name = "HarvestBackend"
 version = "0.1.0"
 description = "Backend code for Harvest"
 readme = "README.md"
