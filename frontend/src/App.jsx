@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from './axios'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import PaymentForm from './PaymentForm'
 import LoginForm from './LoginForm'
@@ -25,18 +25,17 @@ function App() {
       if (savedUser) setUsername(savedUser)
       setShowForm(true)
       // set default axios header
-      axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`
+      // api instance now handles Authorization header automatically
     }
 
     // Setup axios response interceptor for 401 errors
-    const responseInterceptor = axios.interceptors.response.use(
+    const responseInterceptor = api.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
           // Token expired or invalid, log out user
           localStorage.removeItem('accessToken')
           localStorage.removeItem('username')
-          delete axios.defaults.headers.common['Authorization']
           setAccessToken(null)
           setUsername(null)
           setShowForm(false)
@@ -47,7 +46,7 @@ function App() {
     )
 
     return () => {
-      axios.interceptors.response.eject(responseInterceptor)
+      api.interceptors.response.eject(responseInterceptor)
     }
   }, [])
   const decodeToken = (token) => {
@@ -64,7 +63,7 @@ function App() {
     // persist token and username
     localStorage.setItem('accessToken', access)
     if (usernameArg) localStorage.setItem('username', usernameArg)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${access}`
+    // api instance now handles Authorization header automatically
     setAccessToken(access)
     setUsername(usernameArg)
     setLoginError(null)
@@ -74,7 +73,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('accessToken')
     localStorage.removeItem('username')
-    delete axios.defaults.headers.common['Authorization']
+    // api instance now handles Authorization header automatically
     setAccessToken(null)
     setUsername(null)
     setShowForm(false)

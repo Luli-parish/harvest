@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from './axios'
 
 export default function PaymentForm({ accessToken, onSuccess, onCancel }) {
   const [formData, setFormData] = useState({
@@ -43,19 +43,13 @@ export default function PaymentForm({ accessToken, onSuccess, onCancel }) {
         return
       }
 
-      const response = await axios.post(
+      const response = await api.post(
         '/api/add-family-payment/',
         {
           family_name: formData.family_name,
           child_count: parseInt(formData.child_count),
           amount: formData.amount,
           payment_method: formData.payment_method,
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
         }
       )
 

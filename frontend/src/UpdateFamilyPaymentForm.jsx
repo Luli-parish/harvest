@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from './axios'
 
 export default function UpdateFamilyPaymentForm({ familyId, familyName, accessToken, onSubmitSuccess, onCancel }) {
   const [amount, setAmount] = useState('')
@@ -27,15 +27,12 @@ export default function UpdateFamilyPaymentForm({ familyId, familyName, accessTo
 
     try {
       setLoading(true)
-      const response = await axios.put(
+      const response = await api.put(
         '/api/update-family-payment/',
         {
           family_id: familyId,
           amount: parseFloat(amount),
           payment_method: paymentMethod,
-        },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
         }
       )
 

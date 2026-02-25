@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from './axios'
 
 export default function LoginForm({ onLogin }) {
   const [username, setUsername] = useState('')
@@ -16,7 +16,7 @@ export default function LoginForm({ onLogin }) {
     }
     try {
       setLoading(true)
-      const resp = await axios.post('/api/token/', { username, password })
+      const resp = await api.post('/api/token/', { username, password })
       const access = resp.data.access
       if (onLogin) onLogin(access, username)
     } catch (err) {

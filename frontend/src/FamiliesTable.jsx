@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from './axios'
 
 export default function FamiliesTable({ accessToken, onSelectFamily }) {
   const [families, setFamilies] = useState([])
@@ -23,9 +23,7 @@ export default function FamiliesTable({ accessToken, onSelectFamily }) {
     try {
       setLoading(true)
       setError(null)
-      const response = await axios.get('/api/families/', {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      })
+      const response = await api.get('/api/families/')
       setFamilies(response.data.data || [])
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to load families')
