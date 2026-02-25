@@ -2,5 +2,9 @@ from .base import *
 
 # Production-specific settings can go here
 DEBUG = False
-ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOST", "")]
-CSRF_TRUSTED_ORIGINS = [os.environ.get("CSRF_TRUSTED_ORIGIN", "")]
+ALLOWED_HOSTS = [
+    host.strip() for host in os.environ.get("ALLOWED_HOSTS", "").split(",")
+]
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip() for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+]

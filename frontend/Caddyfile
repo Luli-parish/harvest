@@ -15,11 +15,6 @@
 
 # site block, listens on the $PORT environment variable, automatically assigned by railway
 :{$PORT:3000} {
-    # Route requests starting with /api/ to the API backend
-    handle /api/* {
-        reverse_proxy {$VITE_BACKEND_URL}
-    }
-
     # access logs
     log {
         format json # set access log format to json mode
@@ -37,6 +32,13 @@
     # serve files from 'dist'
     file_server
 
+    # Route requests starting with /api/ to the API backend
+    handle /api/* {
+        reverse_proxy {$VITE_BACKEND_URL}
+    }
+
     # if path doesn't exist, redirect it to 'index.html' for client side routing
-    try_files {path} /index.html
+    handle {
+        try_files {path} /index.html
+    }
 }
