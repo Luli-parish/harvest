@@ -95,7 +95,7 @@ export default function FamiliesTable({ accessToken, onSelectFamily }) {
           }}
         >
           <span>Families Payments Summary</span>
-          <div className="d-flex align-items-center gap-2" style={{ minWidth: '340px' }}>
+          <div className="d-flex align-items-center gap-2">
             <input
               type="text"
               className="form-control"

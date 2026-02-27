@@ -52,7 +52,7 @@ export default function UpdateFamilyPaymentForm({ familyId, familyName, accessTo
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card p-4" style={{ width: '50%', margin: '0 auto' }}>
+    <form onSubmit={handleSubmit} className="col-md-5 card p-4" style={{ margin: '0 auto' }}>
       <h5 className="mb-3">Update Family Payment</h5>
 
       {error && (

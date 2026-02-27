@@ -130,7 +130,7 @@ function App() {
         )}
 
         {!accessToken && (
-          <div className="container d-flex justify-content-center">
+          <div className="container">
             <LoginForm onLogin={(access, user) => handleLogin(access, user)} />
           </div>
         )}

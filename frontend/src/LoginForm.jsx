@@ -27,7 +27,11 @@ export default function LoginForm({ onLogin }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card p-4" style={{ width: '33%' }}>
+    <form
+      onSubmit={handleSubmit}
+      className="col-md-5 card p-4"
+      style={{ margin: '0 auto' }}
+    >
       <h5 className="mb-3">Login</h5>
 
       {error && (
