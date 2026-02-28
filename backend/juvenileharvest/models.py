@@ -1,8 +1,10 @@
 from django.db import models
+import pghistory
 
 # Create your models here.
 
 
+@pghistory.track()
 class HarvestPayment(models.Model):
     PAYMENT_STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -37,6 +39,8 @@ class HarvestPayment(models.Model):
 class Family(models.Model):
     family_name = models.CharField(max_length=255)
     child_count = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
     
     class Meta:
         verbose_name_plural = "Families"
