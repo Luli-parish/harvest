@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import PaymentForm from './PaymentForm'
 import LoginForm from './LoginForm'
 import FamiliesTable from './FamiliesTable'
-import UpdateFamilyPaymentForm from './UpdateFamilyPaymentForm'
+import FamilyPaymentsTable from './FamilyPaymentsTable'
 import './App.css'
 
 function App() {
@@ -138,12 +138,11 @@ function App() {
         {showForm && accessToken && (
           <>
             {editingFamily && editingFamily.id ? (
-              <UpdateFamilyPaymentForm
+              <FamilyPaymentsTable
                 familyId={editingFamily.id}
                 familyName={editingFamily.name}
                 accessToken={accessToken}
-                onSubmitSuccess={handlePaymentSubmitSuccess}
-                onCancel={handleCancelEdit}
+                onBack={() => setEditingFamily(null)}
               />
             ) : editingFamily && !editingFamily.id ? (
               <PaymentForm

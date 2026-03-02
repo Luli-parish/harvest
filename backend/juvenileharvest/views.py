@@ -99,3 +99,32 @@ def get_families_summary(request):
 
 	families_list = list(families)
 	return Response({'status': 'success', 'data': families_list}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_family_payments(request):
+	"""Get all HarvestPayment records for a given family id.
+	Query param: family_id
+	Returns: list of payments for the family
+	"""
+	family_id = request.query_params.get('family_id')
+	if not family_id:
+		return Response({'error': 'family_id query parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
+	try:
+		family = Family.objects.get(pk=int(family_id))
+	except (Family.DoesNotExist, ValueError):
+		return Response({'error': 'Family not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+	payments = HarvestPayment.objects.filter(family=family).order_by('-payment_date')
+	payments_data = [
+		{
+			'id': p.id,
+			'amount': str(p.amount),
+			'payment_date': p.payment_date,
+			'payment_method': p.payment_method,
+			'status': p.status,
+			'description': p.description,
+		}
+		for p in payments
+	]
+	return Response({'status': 'success', 'family_id': family.id, 'payments': payments_data}, status=status.HTTP_200_OK)
