@@ -1,9 +1,10 @@
+from django.db.models import OuterRef
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from .models import Family, HarvestPayment
+from .models import Family, HarvestPayment, HarvestPaymentEventProxy
 from decimal import Decimal
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Max
@@ -14,11 +15,11 @@ from django.db.models import Sum, Max
 def add_family_payment(request):
 	"""Create a Family and associated HarvestPayment.
 
-	Expects JSON payload with: family_name, child_count, amount, payment_method
+	Expects JSON payload with: family_name, child_count, amount, payment_method, payer_name
 	Returns HTTP 200 on success or 400 with errors.
 	"""
 	data = request.data
-	required = ('family_name', 'child_count', 'amount', 'payment_method')
+	required = ('family_name', 'child_count', 'amount', 'payment_method', 'payer_name')
 	missing = [k for k in required if k not in data]
 	if missing:
 		return Response({'error': f'Missing fields: {missing}'}, status=status.HTTP_400_BAD_REQUEST)
@@ -33,6 +34,7 @@ def add_family_payment(request):
 			amount=data.get('amount'),
 			payment_method=data.get('payment_method'),
 			family=family,
+			payer_name=data.get('payer_name'),
 		)
 
 	except Exception as exc:
@@ -46,11 +48,11 @@ def add_family_payment(request):
 def update_family_payment(request):
 	"""Create a HarvestPayment for an existing Family.
 
-	Expects JSON payload with: family_id, amount, payment_method
+	Expects JSON payload with: family_id, amount, payment_method, payer_name
 	Returns HTTP 200 on success or 400 with errors.
 	"""
 	data = request.data
-	required = ('family_id', 'amount', 'payment_method')
+	required = ('family_id', 'amount', 'payment_method', 'payer_name')
 	missing = [k for k in required if k not in data]
 	if missing:
 		return Response({'error': f'Missing fields: {missing}'}, status=status.HTTP_400_BAD_REQUEST)
@@ -72,6 +74,7 @@ def update_family_payment(request):
 			amount=amount,
 			payment_method=data.get('payment_method'),
 			family=family,
+			payer_name=data.get('payer_name'),
 		)
 	except Exception as exc:
 		return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
@@ -115,7 +118,16 @@ def get_family_payments(request):
 	except (Family.DoesNotExist, ValueError):
 		return Response({'error': 'Family not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-	payments = HarvestPayment.objects.filter(family=family).order_by('-payment_date')
+	payments = (
+		HarvestPayment.objects.filter(family=family).annotate(
+			created_by=(
+				HarvestPaymentEventProxy.objects
+				.filter(id=OuterRef('pk'), pgh_label='insert')
+				.values('user__email')[:1]
+			)
+		).order_by('-payment_date')
+	)
+
 	payments_data = [
 		{
 			'id': p.id,
@@ -124,6 +136,8 @@ def get_family_payments(request):
 			'payment_method': p.payment_method,
 			'status': p.status,
 			'description': p.description,
+			'payer_name': p.payer_name,
+			'created_by': p.created_by if hasattr(p, 'created_by') else None,
 		}
 		for p in payments
 	]

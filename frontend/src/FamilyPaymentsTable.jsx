@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from './axios';
 import UpdateFamilyPaymentForm from './UpdateFamilyPaymentForm';
 
-function FamilyPaymentsTable({ familyId, familyName, accessToken, onPaymentAdded, onBack }) {
+function FamilyPaymentsTable({ familyId, familyName, onPaymentAdded, onBack }) {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -61,7 +61,6 @@ function FamilyPaymentsTable({ familyId, familyName, accessToken, onPaymentAdded
       <UpdateFamilyPaymentForm
         familyId={familyId}
         familyName={familyName}
-        accessToken={accessToken}
         onSubmitSuccess={handlePaymentSubmitSuccess}
         onCancel={handleCancel}
       />
@@ -112,17 +111,21 @@ function FamilyPaymentsTable({ familyId, familyName, accessToken, onPaymentAdded
         <table className="table table-striped">
           <thead>
             <tr>
-              <th>Amount</th>
-              <th>Payment Date</th>
-              <th>Payment Method</th>
+              <th className='px-3'>Payer</th>
+              <th className='px-3'>Amount</th>
+              <th className='px-3'>Payment Date</th>
+              <th className='px-3'>Payment Method</th>
+              <th className='px-3'>Inserted By</th>
             </tr>
           </thead>
           <tbody>
             {payments.map(payment => (
               <tr key={payment.id}>
-                <td className='px-4'>{payment.amount}</td>
-                <td className='px-4'>{formatDate(payment.payment_date)}</td>
-                <td className='px-4'>{payment.payment_method}</td>
+                <td className='px-3'>{payment.payer_name}</td>
+                <td className='px-3'>{payment.amount}</td>
+                <td className='px-3'>{formatDate(payment.payment_date)}</td>
+                <td className='px-3'>{payment.payment_method}</td>
+                <td className='px-3'>{payment.created_by || 'N/A'}</td>
               </tr>
             ))}
           </tbody>

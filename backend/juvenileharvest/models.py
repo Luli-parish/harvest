@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 import pghistory
 
@@ -28,12 +29,27 @@ class HarvestPayment(models.Model):
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    payer_name = models.CharField(max_length=255, null=True, blank=True)
     
     class Meta:
         ordering = ['-created_at']
     
     def __str__(self):
-        return f"Payment of {self.amount} on {self.payment_date.strftime('%Y-%m-%d')}"
+        return f"Payment of {self.amount} on {self.payment_date.strftime('%Y-%m-%d')} by {self.payer_name}"
+
+
+class HarvestPaymentEventProxy(HarvestPayment.pgh_event_model):
+    user = pghistory.ProxyField(
+        "pgh_context__metadata__user",
+        models.ForeignKey(
+            settings.AUTH_USER_MODEL,
+            on_delete=models.DO_NOTHING,
+            help_text="The user associated with the event.",
+        ),
+    )
+
+    class Meta:
+        proxy = True
 
 
 class Family(models.Model):

@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import api from './axios'
 
-export default function UpdateFamilyPaymentForm({ familyId, familyName, accessToken, onSubmitSuccess, onCancel }) {
+export default function UpdateFamilyPaymentForm({ familyId, familyName, onSubmitSuccess, onCancel }) {
   const [amount, setAmount] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('cash')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
+  const [payerName, setPayerName] = useState('')
 
   const paymentMethods = [
     { value: 'bank_transfer', label: 'Bank Transfer' },
@@ -24,6 +25,10 @@ export default function UpdateFamilyPaymentForm({ familyId, familyName, accessTo
       setError('Please enter an amount')
       return
     }
+    if (!payerName) {
+      setError('Please enter the payer\'s name')
+      return
+    }
 
     try {
       setLoading(true)
@@ -33,12 +38,14 @@ export default function UpdateFamilyPaymentForm({ familyId, familyName, accessTo
           family_id: familyId,
           amount: parseFloat(amount),
           payment_method: paymentMethod,
+          payer_name: payerName,
         }
       )
 
       setSuccess(true)
       setAmount('')
       setPaymentMethod('cash')
+      setPayerName('')
 
       // Call success callback after brief delay to show success message
       setTimeout(() => {
@@ -103,6 +110,18 @@ export default function UpdateFamilyPaymentForm({ familyId, familyName, accessTo
             required
           />
         </div>
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label">Payer's Name</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Enter payer's name"
+          value={payerName}
+          onChange={(e) => setPayerName(e.target.value)}
+          required
+        />
       </div>
 
       <div className="mb-3">

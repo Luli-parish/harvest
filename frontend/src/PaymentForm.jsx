@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import api from './axios'
 
-export default function PaymentForm({ accessToken, onSuccess, onCancel }) {
+export default function PaymentForm({ onSuccess, onCancel }) {
   const [formData, setFormData] = useState({
     family_name: '',
     child_count: '',
     amount: '',
     payment_method: 'bank_transfer',
+    payer_name: '',
   })
 
   const [loading, setLoading] = useState(false)
@@ -37,7 +38,7 @@ export default function PaymentForm({ accessToken, onSuccess, onCancel }) {
 
     try {
       // Validate required fields
-      if (!formData.family_name || !formData.child_count || !formData.amount || !formData.payment_method) {
+      if (!formData.family_name || !formData.child_count || !formData.amount || !formData.payment_method || !formData.payer_name) {
         setError('All fields are required')
         setLoading(false)
         return
@@ -50,6 +51,7 @@ export default function PaymentForm({ accessToken, onSuccess, onCancel }) {
           child_count: parseInt(formData.child_count),
           amount: formData.amount,
           payment_method: formData.payment_method,
+          payer_name: formData.payer_name,
         }
       )
 
@@ -61,6 +63,7 @@ export default function PaymentForm({ accessToken, onSuccess, onCancel }) {
         child_count: '',
         amount: '',
         payment_method: 'bank_transfer',
+        payer_name: '',
       })
 
       // Call callback if provided
@@ -176,6 +179,22 @@ export default function PaymentForm({ accessToken, onSuccess, onCancel }) {
                       </option>
                     ))}
                   </select>
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="payer_name" className="form-label">
+                    Payer's Name <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="payer_name"
+                    name="payer_name"
+                    value={formData.payer_name}
+                    onChange={handleChange}
+                    placeholder="e.g., John Doe"
+                    required
+                  />
                 </div>
 
                 <div className="d-flex gap-2 mt-4">

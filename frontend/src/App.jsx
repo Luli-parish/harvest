@@ -141,12 +141,10 @@ function App() {
               <FamilyPaymentsTable
                 familyId={editingFamily.id}
                 familyName={editingFamily.name}
-                accessToken={accessToken}
                 onBack={() => setEditingFamily(null)}
               />
             ) : editingFamily && !editingFamily.id ? (
               <PaymentForm
-                accessToken={accessToken}
                 onSuccess={() => {
                   setRefreshTrigger((prev) => prev + 1)
                   setEditingFamily(null)
