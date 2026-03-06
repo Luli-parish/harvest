@@ -1,17 +1,16 @@
-from django.db.models import OuterRef
-from django.shortcuts import render
+from decimal import Decimal
+from django.db.models import OuterRef, Sum, Max
+from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .models import Family, HarvestPayment, HarvestPaymentEventProxy
-from decimal import Decimal
-from django.shortcuts import get_object_or_404
-from django.db.models import Sum, Max
+from .permissions import IsTreasurer
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsTreasurer])
 def add_family_payment(request):
 	"""Create a Family and associated HarvestPayment.
 
@@ -19,7 +18,7 @@ def add_family_payment(request):
 	Returns HTTP 200 on success or 400 with errors.
 	"""
 	data = request.data
-	required = ('family_name', 'child_count', 'amount', 'payment_method', 'payer_name')
+	required = ('family_name', 'amount', 'payment_method', 'payer_name')
 	missing = [k for k in required if k not in data]
 	if missing:
 		return Response({'error': f'Missing fields: {missing}'}, status=status.HTTP_400_BAD_REQUEST)
@@ -28,6 +27,7 @@ def add_family_payment(request):
 		family = Family.objects.create(
 			family_name=data.get('family_name'),
 			child_count=int(data.get('child_count')),
+			mobile_no=data.get('mobile_no'),
 		)
 
 		payment = HarvestPayment.objects.create(
@@ -44,7 +44,7 @@ def add_family_payment(request):
 
 
 @api_view(['PUT'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsTreasurer])
 def update_family_payment(request):
 	"""Create a HarvestPayment for an existing Family.
 
