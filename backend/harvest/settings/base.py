@@ -115,3 +115,5 @@ SIMPLE_JWT = {
 }
 
 PGHISTORY_ADMIN_MODEL = 'pghistory.MiddlewareEvents'
+
+AUTH_USER_MODEL = 'juvenileharvest.AuthUser'

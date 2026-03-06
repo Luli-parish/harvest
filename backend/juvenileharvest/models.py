@@ -1,8 +1,13 @@
+from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.db import models
 import pghistory
 
 # Create your models here.
+
+class AuthUser(AbstractUser):
+    # Add any extra fields here
+    mobile_no = models.CharField(max_length=20, blank=True, null=True)
 
 
 @pghistory.track()
@@ -55,6 +60,7 @@ class HarvestPaymentEventProxy(HarvestPayment.pgh_event_model):
 class Family(models.Model):
     family_name = models.CharField(max_length=255)
     child_count = models.PositiveIntegerField(default=0)
+    mobile_no = models.CharField(max_length=20, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
     
