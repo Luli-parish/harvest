@@ -58,9 +58,20 @@ class HarvestPaymentEventProxy(HarvestPayment.pgh_event_model):
 
 
 class Family(models.Model):
+    CATEGORY_CHOICES = [
+        ('executive', 'Executive'),
+        ('committee_with_family', 'Committee with Family'),
+        ('single_committee', 'Single Committee'),
+        ('family_one_child', 'Family with one child'),
+        ('family_multiple_children', 'Family with multiple children'),
+        ('grandparents', 'Grandparents'),
+    ]
+    CATEGORY_CHOICES_DICT = dict(CATEGORY_CHOICES)
+
     family_name = models.CharField(max_length=255)
     child_count = models.PositiveIntegerField(default=0)
     mobile_no = models.CharField(max_length=20, blank=True, null=True)
+    category = models.CharField(max_length=32, choices=CATEGORY_CHOICES, default='family_one_child')
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
     

@@ -28,6 +28,7 @@ def add_family_payment(request):
 			family_name=data.get('family_name'),
 			child_count=int(data.get('child_count')),
 			mobile_no=data.get('mobile_no'),
+			category=data.get('category'),
 		)
 
 		payment = HarvestPayment.objects.create(
@@ -96,11 +97,15 @@ def get_families_summary(request):
 		'id',
 		'family_name',
 		'child_count',
+		'category',
 		'total_amount_paid',
 		'last_payment_date',
 	)
 
-	families_list = list(families)
+	families_list = [
+		{**family, 'category': Family.CATEGORY_CHOICES_DICT.get(family['category'])}
+		for family in families
+	]
 	return Response({'status': 'success', 'data': families_list}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])

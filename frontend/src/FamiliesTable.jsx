@@ -122,7 +122,8 @@ export default function FamiliesTable({ accessToken, onSelectFamily }) {
             <thead>
               <tr style={{ backgroundColor: '#304078', color: '#fff' }}>
                 <th style={{ padding: '12px', textAlign: 'left' }}>Family Name</th>
-                <th style={{ padding: '12px', textAlign: 'center' }}>No of Children</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>Family Category</th>
+                <th style={{ padding: '12px', textAlign: 'center' }}>No. of Children</th>
                 <th style={{ padding: '12px', textAlign: 'right' }}>Amount Paid</th>
                 <th style={{ padding: '12px', textAlign: 'center' }}>Last Payment Date</th>
               </tr>
@@ -145,6 +146,9 @@ export default function FamiliesTable({ accessToken, onSelectFamily }) {
                     <td style={{ padding: '12px', color: '#000' }}>
                       {family.family_name}
                     </td>
+                    <td style={{ padding: '12px', textAlign: 'left', color: '#000' }}>
+                      {family.category ? family.category : 'N/A'}
+                    </td>
                     <td style={{ padding: '12px', textAlign: 'center', color: '#000' }}>
                       {family.child_count}
                     </td>
@@ -158,7 +162,7 @@ export default function FamiliesTable({ accessToken, onSelectFamily }) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" style={{ padding: '20px', textAlign: 'center', color: '#000' }}>
+                  <td colSpan="5" style={{ padding: '20px', textAlign: 'center', color: '#000' }}>
                     No families found
                   </td>
                 </tr>

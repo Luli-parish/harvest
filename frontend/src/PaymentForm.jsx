@@ -4,12 +4,21 @@ import api from './axios'
 export default function PaymentForm({ onSuccess, onCancel }) {
   const [formData, setFormData] = useState({
     family_name: '',
+    category: 'family_one_child',
     child_count: '',
     amount: '',
     payment_method: 'bank_transfer',
     payer_name: '',
     mobile_number: '',
   })
+  const categoryOptions = [
+    { value: 'executive', label: 'Executive' },
+    { value: 'committee_with_family', label: 'Committee with Family' },
+    { value: 'single_committee', label: 'Single Committee' },
+    { value: 'family_one_child', label: 'Family with one child' },
+    { value: 'family_multiple_children', label: 'Family with multiple children' },
+    { value: 'grandparents', label: 'Grandparents' },
+  ]
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -49,6 +58,7 @@ export default function PaymentForm({ onSuccess, onCancel }) {
         '/api/add-family-payment/',
         {
           family_name: formData.family_name,
+          category: formData.category,
           child_count: parseInt(formData.child_count),
           amount: formData.amount,
           payment_method: formData.payment_method,
@@ -57,11 +67,12 @@ export default function PaymentForm({ onSuccess, onCancel }) {
         }
       )
 
-      setSuccess(`Payment created successfully! Family ID: ${response.data.family_id}, Payment ID: ${response.data.payment_id}`)
+      setSuccess(`Payment created successfully!`)
       
       // Reset form
       setFormData({
         family_name: '',
+        category: 'family_one_child',
         child_count: '',
         amount: '',
         payment_method: 'bank_transfer',
@@ -70,7 +81,11 @@ export default function PaymentForm({ onSuccess, onCancel }) {
       })
 
       // Call callback if provided
-      if (onSuccess) onSuccess(response.data)
+      if (onSuccess) {
+        setTimeout(() => {
+          onSuccess()
+        }, 1500)
+      }
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Failed to create payment')
     } finally {
@@ -127,8 +142,26 @@ export default function PaymentForm({ onSuccess, onCancel }) {
                 </div>
 
                 <div className="mb-3">
+                  <label htmlFor="category" className="form-label">
+                    Category <span className="text-danger">*</span>
+                  </label>
+                  <select
+                    className="form-select"
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                  >
+                    {categoryOptions.map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mb-3">
                   <label htmlFor="child_count" className="form-label">
-                    Number of Children <span className="text-danger">*</span>
+                    Number of Children
                   </label>
                   <input
                     type="number"
@@ -139,13 +172,12 @@ export default function PaymentForm({ onSuccess, onCancel }) {
                     onChange={handleChange}
                     placeholder="e.g., 3"
                     min="0"
-                    required
                   />
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="mobile_number" className="form-label">
-                    Mobile Number <span className="text-danger">*</span>
+                    Mobile Number
                   </label>
                   <input
                     type="tel"
@@ -155,7 +187,6 @@ export default function PaymentForm({ onSuccess, onCancel }) {
                     value={formData.mobile_number}
                     onChange={handleChange}
                     placeholder="e.g., +1234567890"
-                    required
                   />
                 </div>
 
