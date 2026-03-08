@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 import api from './axios'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import PaymentForm from './PaymentForm'
-import LoginForm from './LoginForm'
 import FamiliesTable from './FamiliesTable'
 import FamilyPaymentsTable from './FamilyPaymentsTable'
+import Authentication from './Authentication'
 import './App.css'
 
 function App() {
@@ -15,7 +15,6 @@ function App() {
   const [showForm, setShowForm] = useState(false)
   const [editingFamily, setEditingFamily] = useState(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
-  useEffect(() => {}, [])
   // Restore session from localStorage if present
   useEffect(() => {
     const savedToken = localStorage.getItem('accessToken')
@@ -24,8 +23,6 @@ function App() {
       setAccessToken(savedToken)
       if (savedUser) setUsername(savedUser)
       setShowForm(true)
-      // set default axios header
-      // api instance now handles Authorization header automatically
     }
 
     // Setup axios response interceptor for 401 errors
@@ -49,6 +46,7 @@ function App() {
       api.interceptors.response.eject(responseInterceptor)
     }
   }, [])
+
   const decodeToken = (token) => {
     try {
       const payload = token.split('.')[1]
@@ -59,7 +57,8 @@ function App() {
       return null
     }
   }
-  const handleLogin = (access, usernameArg) => {
+
+  const onLogin = (access, usernameArg) => {
     // persist token and username
     localStorage.setItem('accessToken', access)
     if (usernameArg) localStorage.setItem('username', usernameArg)
@@ -131,7 +130,7 @@ function App() {
 
         {!accessToken && (
           <div className="container">
-            <LoginForm onLogin={(access, user) => handleLogin(access, user)} />
+            <Authentication onLogin={onLogin} />
           </div>
         )}
 
