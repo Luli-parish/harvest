@@ -8,6 +8,7 @@ export default function PaymentForm({ onSuccess, onCancel }) {
     amount: '',
     payment_method: 'bank_transfer',
     payer_name: '',
+    mobile_number: '',
   })
 
   const [loading, setLoading] = useState(false)
@@ -38,7 +39,7 @@ export default function PaymentForm({ onSuccess, onCancel }) {
 
     try {
       // Validate required fields
-      if (!formData.family_name || !formData.child_count || !formData.amount || !formData.payment_method || !formData.payer_name) {
+      if (!formData.family_name || !formData.amount || !formData.payment_method || !formData.payer_name) {
         setError('All fields are required')
         setLoading(false)
         return
@@ -52,6 +53,7 @@ export default function PaymentForm({ onSuccess, onCancel }) {
           amount: formData.amount,
           payment_method: formData.payment_method,
           payer_name: formData.payer_name,
+          mobile_number: formData.mobile_number,
         }
       )
 
@@ -64,6 +66,7 @@ export default function PaymentForm({ onSuccess, onCancel }) {
         amount: '',
         payment_method: 'bank_transfer',
         payer_name: '',
+        mobile_number: '',
       })
 
       // Call callback if provided
@@ -136,6 +139,22 @@ export default function PaymentForm({ onSuccess, onCancel }) {
                     onChange={handleChange}
                     placeholder="e.g., 3"
                     min="0"
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="mobile_number" className="form-label">
+                    Mobile Number <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    className="form-control"
+                    id="mobile_number"
+                    name="mobile_number"
+                    value={formData.mobile_number}
+                    onChange={handleChange}
+                    placeholder="e.g., +1234567890"
                     required
                   />
                 </div>
