@@ -59,7 +59,7 @@ export default function PaymentForm({ onSuccess, onCancel }) {
         {
           family_name: formData.family_name,
           category: formData.category,
-          child_count: parseInt(formData.child_count),
+          child_count: formData.child_count && parseInt(formData.child_count),
           amount: formData.amount,
           payment_method: formData.payment_method,
           payer_name: formData.payer_name,
