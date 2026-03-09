@@ -26,7 +26,7 @@ def add_family_payment(request):
 	try:
 		family = Family.objects.create(
 			family_name=data.get('family_name'),
-			child_count=int(data.get('child_count')),
+			child_count=data.get('child_count'),
 			mobile_no=data.get('mobile_no'),
 			category=data.get('category'),
 		)
