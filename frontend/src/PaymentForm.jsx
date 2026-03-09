@@ -136,7 +136,7 @@ export default function PaymentForm({ onSuccess, onCancel }) {
                     name="family_name"
                     value={formData.family_name}
                     onChange={handleChange}
-                    placeholder="e.g., Smith Family"
+                    placeholder="e.g., Last Name First Name(s)"
                     required
                   />
                 </div>
