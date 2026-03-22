@@ -5,6 +5,7 @@ import PaymentForm from './PaymentForm'
 import FamiliesTable from './FamiliesTable'
 import FamilyPaymentsTable from './FamilyPaymentsTable'
 import Authentication from './Authentication'
+import ChangePasswordForm from './ChangePasswordForm'
 import './App.css'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
   const [showForm, setShowForm] = useState(false)
   const [editingFamily, setEditingFamily] = useState(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [showChangePassword, setShowChangePassword] = useState(false)
   // Restore session from localStorage if present
   useEffect(() => {
     const savedToken = localStorage.getItem('accessToken')
@@ -29,7 +31,7 @@ function App() {
     const responseInterceptor = api.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response?.status === 401) {
+        if (localStorage.getItem('accessToken') && error.response?.status === 401) {
           // Token expired or invalid, log out user
           localStorage.removeItem('accessToken')
           localStorage.removeItem('username')
@@ -76,6 +78,7 @@ function App() {
     setAccessToken(null)
     setUsername(null)
     setShowForm(false)
+    setShowChangePassword(false)
   }
 
   const handleSelectFamily = (familyId, familyName) => {
@@ -110,6 +113,12 @@ function App() {
           {username ? (
             <div className="d-flex align-items-center">
               <span className="text-white me-3">👤 {username}</span>
+              <button
+                className="btn btn-sm btn-outline-warning me-2"
+                onClick={() => setShowChangePassword(true)}
+              >
+                Change Password
+              </button>
               <button className="btn btn-sm btn-outline-light" onClick={handleLogout}>
                 Logout
               </button>
@@ -134,7 +143,14 @@ function App() {
           </div>
         )}
 
-        {showForm && accessToken && (
+        {showChangePassword ? (
+          <div className="container">
+            <ChangePasswordForm
+              onCancel={() => setShowChangePassword(false)}
+              onSubmitSuccess={handleLogout}
+            />
+          </div>
+        ) : showForm && accessToken && (
           <>
             {editingFamily && editingFamily.id ? (
               <FamilyPaymentsTable
@@ -144,10 +160,7 @@ function App() {
               />
             ) : editingFamily && !editingFamily.id ? (
               <PaymentForm
-                onSuccess={() => {
-                  setRefreshTrigger((prev) => prev + 1)
-                  setEditingFamily(null)
-                }}
+                onSuccess={handlePaymentSubmitSuccess}
                 onCancel={handleCancelEdit}
               />
             ) : (

@@ -138,7 +138,7 @@ def get_family_payments(request):
 			'id': p.id,
 			'amount': str(p.amount),
 			'payment_date': p.payment_date,
-			'payment_method': p.payment_method,
+			'payment_method': p.get_payment_method_display(),
 			'status': p.status,
 			'description': p.description,
 			'payer_name': p.payer_name,
