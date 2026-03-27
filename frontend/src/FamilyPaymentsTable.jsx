@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import api from './axios';
 import UpdateFamilyPaymentForm from './UpdateFamilyPaymentForm';
+import ManageChildForm from './ManageChildForm';
 
-function FamilyPaymentsTable({ familyId, familyName, onPaymentAdded, onBack }) {
+function FamilyPaymentsTable({ familyId, familyName, onBack }) {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [showAddChildForm, setShowAddChildForm] = useState(false);
 
   useEffect(() => {
     if (!familyId) return;
@@ -31,7 +33,6 @@ function FamilyPaymentsTable({ familyId, familyName, onPaymentAdded, onBack }) {
 
   const handlePaymentSubmitSuccess = () => {
     setShowForm(false);
-    if (onPaymentAdded) onPaymentAdded();
   };
 
   const handleCancel = () => {
@@ -40,6 +41,18 @@ function FamilyPaymentsTable({ familyId, familyName, onPaymentAdded, onBack }) {
 
   const handleBackClick = () => {
     if (onBack) onBack();
+  };
+
+  const handleAddChildClick = () => {
+    setShowAddChildForm(true);
+  };
+
+  const handleAddChildCancel = () => {
+    setShowAddChildForm(false);
+  };
+
+  const handleAddChildSubmit = (children) => {
+    setShowAddChildForm(false);
   };
 
   if (loading) {
@@ -67,6 +80,18 @@ function FamilyPaymentsTable({ familyId, familyName, onPaymentAdded, onBack }) {
     );
   }
 
+  if (showAddChildForm) {
+    return (
+      <div className="container">
+        <ManageChildForm
+          familyId={familyId}
+          onSubmit={handleAddChildSubmit}
+          onCancel={handleAddChildCancel}
+        />
+      </div>
+    );
+  }
+
   if (!payments || payments.length === 0) {
     return (
       <div className="container">
@@ -74,9 +99,14 @@ function FamilyPaymentsTable({ familyId, familyName, onPaymentAdded, onBack }) {
           <button className="btn btn-secondary" type="button" onClick={handleBackClick}>
             ← Back to Families
           </button>
-          <button className="btn btn-primary" type="button" onClick={handleAddPaymentClick}>
-            + Add Payment
-          </button>
+          <div className="d-flex gap-2">
+            <button className="btn btn-primary" type="button" onClick={handleAddPaymentClick}>
+              + Add Payment
+            </button>
+            <button className="btn btn-primary" type="button" onClick={handleAddChildClick}>
+              + Manage Children
+            </button>
+          </div>
         </div>
         <div>No payments found for this family.</div>
       </div>
@@ -103,9 +133,14 @@ function FamilyPaymentsTable({ familyId, familyName, onPaymentAdded, onBack }) {
         <button className="btn btn-secondary" type="button" onClick={handleBackClick}>
           ← Back to Families
         </button>
-        <button className="btn btn-primary" type="button" onClick={handleAddPaymentClick}>
-          + Add Payment
-        </button>
+        <div className="d-flex gap-2">
+          <button className="btn btn-primary" type="button" onClick={handleAddPaymentClick}>
+            + Add Payment
+          </button>
+          <button className="btn btn-primary" type="button" onClick={handleAddChildClick}>
+            + Manage Children
+          </button>
+        </div>
       </div>
       <div className="table-responsive mt-3">
         <table className="table table-striped">

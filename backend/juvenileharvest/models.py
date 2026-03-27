@@ -80,3 +80,13 @@ class Family(models.Model):
     
     def __str__(self):
         return self.family_name
+
+
+class Child(models.Model):
+    full_name = models.CharField(max_length=255)
+    family = models.ForeignKey('Family', on_delete=models.CASCADE, related_name='children')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.full_name
