@@ -47,7 +47,7 @@ function ChangePasswordForm({ onSubmitSuccess, onCancel }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 border rounded bg-white" style={{ maxWidth: 400, margin: '0 auto' }}>
+    <form onSubmit={handleSubmit} className="col-md-5 p-3 border rounded bg-white" style={{ margin: '0 auto' }}>
       <h5 className="mb-3">Change Password</h5>
       {error && <div className="alert alert-danger py-2">{error}</div>}
       {success && <div className="alert alert-success py-2">{success}</div>}
@@ -88,11 +88,11 @@ function ChangePasswordForm({ onSubmitSuccess, onCancel }) {
         />
       </div>
       <div className="d-flex justify-content-end">
-        <button type="button" className="btn btn-secondary me-2" onClick={onCancel} disabled={isLoading}>
-          Cancel
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={isLoading}>
+        <button type="submit" className="btn btn-primary me-2" disabled={isLoading}>
           {isLoading ? 'Changing...' : 'Change Password'}
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={onCancel} disabled={isLoading}>
+          Cancel
         </button>
       </div>
     </form>

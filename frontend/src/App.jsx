@@ -13,7 +13,7 @@ function App() {
   const [username, setUsername] = useState(null)
   const [loading, setLoading] = useState(false)
   const [loginError, setLoginError] = useState(null)
-  const [showForm, setShowForm] = useState(false)
+  const [showPaymentForm, setShowPaymentForm] = useState(false)
   const [editingFamily, setEditingFamily] = useState(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [showChangePassword, setShowChangePassword] = useState(false)
@@ -24,7 +24,6 @@ function App() {
     if (savedToken) {
       setAccessToken(savedToken)
       if (savedUser) setUsername(savedUser)
-      setShowForm(true)
     }
 
     // Setup axios response interceptor for 401 errors
@@ -37,7 +36,7 @@ function App() {
           localStorage.removeItem('username')
           setAccessToken(null)
           setUsername(null)
-          setShowForm(false)
+          setShowPaymentForm(false)
           setLoginError('Your session has expired. Please log in again.')
         }
         return Promise.reject(error)
@@ -68,7 +67,6 @@ function App() {
     setAccessToken(access)
     setUsername(usernameArg)
     setLoginError(null)
-    setShowForm(true)
   }
 
   const handleLogout = () => {
@@ -77,21 +75,72 @@ function App() {
     // api instance now handles Authorization header automatically
     setAccessToken(null)
     setUsername(null)
-    setShowForm(false)
+    setShowPaymentForm(false)
     setShowChangePassword(false)
   }
 
   const handleSelectFamily = (familyId, familyName) => {
-    setEditingFamily({ id: familyId, name: familyName })
+    if (familyId && familyName) {
+      return setEditingFamily({ id: familyId, name: familyName })
+    }
+  }
+
+  const handleShowPaymentForm = () => {
+    return setShowPaymentForm(true)
   }
 
   const handleCancelEdit = () => {
-    setEditingFamily(null)
+    setShowPaymentForm(false)
   }
 
   const handlePaymentSubmitSuccess = () => {
-    setEditingFamily(null)
+    setShowPaymentForm(false)
     setRefreshTrigger((prev) => prev + 1)
+  }
+
+  const renderPage = () => {
+    if (!accessToken) {
+      return (
+        <div className="container">
+          <Authentication onLogin={onLogin} />
+        </div>
+      )
+    }
+    if (showChangePassword) {
+      return (
+        <div className="container">
+          <ChangePasswordForm
+            onCancel={() => setShowChangePassword(false)}
+            onSubmitSuccess={handleLogout}
+          />
+        </div>
+      )
+    }
+    if (editingFamily) {
+      return (
+        <FamilyPaymentsTable
+          familyId={editingFamily.id}
+          familyName={editingFamily.name}
+          onBack={() => setEditingFamily(null)}
+        />
+      )
+    }
+    if (showPaymentForm) {
+      return (
+        <PaymentForm
+          onSuccess={handlePaymentSubmitSuccess}
+          onCancel={handleCancelEdit}
+        />
+      )
+    }
+    return (
+      <FamiliesTable
+        accessToken={accessToken}
+        onSelectFamily={handleSelectFamily}
+        showPaymentForm={handleShowPaymentForm}
+        key={refreshTrigger}
+      />
+    )
   }
 
   if (loading) {
@@ -136,44 +185,7 @@ function App() {
             </div>
           </div>
         )}
-
-        {!accessToken && (
-          <div className="container">
-            <Authentication onLogin={onLogin} />
-          </div>
-        )}
-
-        {showChangePassword ? (
-          <div className="container">
-            <ChangePasswordForm
-              onCancel={() => setShowChangePassword(false)}
-              onSubmitSuccess={handleLogout}
-            />
-          </div>
-        ) : showForm && accessToken && (
-          <>
-            {editingFamily && editingFamily.id ? (
-              <FamilyPaymentsTable
-                familyId={editingFamily.id}
-                familyName={editingFamily.name}
-                onBack={() => setEditingFamily(null)}
-              />
-            ) : editingFamily && !editingFamily.id ? (
-              <PaymentForm
-                onSuccess={handlePaymentSubmitSuccess}
-                onCancel={handleCancelEdit}
-              />
-            ) : (
-              <>
-                <FamiliesTable
-                  accessToken={accessToken}
-                  onSelectFamily={handleSelectFamily}
-                  key={refreshTrigger}
-                />
-              </>
-            )}
-          </>
-        )}
+        {renderPage()}
       </main>
 
       <footer className="bg-light py-4 mt-5">

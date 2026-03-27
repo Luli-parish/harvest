@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import api from './axios'
+import { CATEGORY_OPTIONS } from './constants/familyCategories'
 
 export default function PaymentForm({ onSuccess, onCancel }) {
   const [formData, setFormData] = useState({
@@ -11,14 +12,6 @@ export default function PaymentForm({ onSuccess, onCancel }) {
     payer_name: '',
     mobile_number: '',
   })
-  const categoryOptions = [
-    { value: 'executive', label: 'Executive' },
-    { value: 'committee_with_family', label: 'Committee with Family' },
-    { value: 'single_committee', label: 'Single Committee' },
-    { value: 'family_one_child', label: 'Family with one child' },
-    { value: 'family_multiple_children', label: 'Family with multiple children' },
-    { value: 'grandparents', label: 'Grandparents' },
-  ]
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -153,7 +146,7 @@ export default function PaymentForm({ onSuccess, onCancel }) {
                     onChange={handleChange}
                     required
                   >
-                    {categoryOptions.map(opt => (
+                    {CATEGORY_OPTIONS.map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
                   </select>
