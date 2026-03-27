@@ -3,9 +3,11 @@ import api from './axios'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import PaymentForm from './PaymentForm'
 import FamiliesTable from './FamiliesTable'
+import FamiliesChildrenTable from './FamiliesChildrenTable'
 import FamilyPaymentsTable from './FamilyPaymentsTable'
 import Authentication from './Authentication'
 import ChangePasswordForm from './ChangePasswordForm'
+import Tab from './components/Tab'
 import './App.css'
 
 function App() {
@@ -134,12 +136,26 @@ function App() {
       )
     }
     return (
-      <FamiliesTable
-        accessToken={accessToken}
-        onSelectFamily={handleSelectFamily}
-        showPaymentForm={handleShowPaymentForm}
-        key={refreshTrigger}
-      />
+      <div className='container'>
+        <Tab
+          sections={[
+            {
+              header: 'Payments',
+              content: (
+                <FamiliesTable
+                  onSelectFamily={handleSelectFamily}
+                  showPaymentForm={handleShowPaymentForm}
+                  key={refreshTrigger}
+                />
+              ),
+            },
+            {
+              header: 'Children',
+              content: <FamiliesChildrenTable />,
+            },
+          ]}
+        />
+      </div>
     )
   }
 

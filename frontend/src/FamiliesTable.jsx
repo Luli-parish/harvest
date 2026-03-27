@@ -16,7 +16,7 @@ const getPendingAmount = (category, amount_paid) => {
   else { return levy - amount_paid }
 }
 
-export default function FamiliesTable({ accessToken, onSelectFamily, showPaymentForm }) {
+export default function FamiliesTable({ onSelectFamily, showPaymentForm }) {
   const [families, setFamilies] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -32,7 +32,7 @@ export default function FamiliesTable({ accessToken, onSelectFamily, showPayment
 
   useEffect(() => {
     fetchFamilies()
-  }, [accessToken])
+  }, [])
 
   const fetchFamilies = async () => {
     try {
