@@ -1,14 +1,29 @@
 import { useState, useEffect } from 'react'
 import api from './axios'
+import { CATEGORY_LEVIES } from './constants/familyCategories'
 
-export default function FamiliesTable({ accessToken, onSelectFamily }) {
+const formatCurrency = (amount) => {
+  if (!amount && amount !== 0) return 'N/A'
+  return `$${parseFloat(amount).toFixed(2)}`
+}
+
+const getPendingAmount = (category, amount_paid) => {
+  if (!category || !Number.isFinite(amount_paid) ) {
+    return 'N/A'
+  }
+  const levy = CATEGORY_LEVIES[category]
+  if (amount_paid > levy) { return 0 }
+  else { return levy - amount_paid }
+}
+
+export default function FamiliesTable({ accessToken, onSelectFamily, showPaymentForm }) {
   const [families, setFamilies] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleAddNew = () => {
-    onSelectFamily(null, null)
+    showPaymentForm();
   }
 
   const filteredFamilies = families.filter((family) =>
@@ -45,11 +60,6 @@ export default function FamiliesTable({ accessToken, onSelectFamily }) {
     } catch {
       return 'N/A'
     }
-  }
-
-  const formatCurrency = (amount) => {
-    if (!amount && amount !== 0) return 'N/A'
-    return `$${parseFloat(amount).toFixed(2)}`
   }
 
   const calculateTotalAmount = () => {
@@ -125,6 +135,7 @@ export default function FamiliesTable({ accessToken, onSelectFamily }) {
                 <th style={{ padding: '12px', textAlign: 'left' }}>Family Category</th>
                 <th style={{ padding: '12px', textAlign: 'center' }}>No. of Children</th>
                 <th style={{ padding: '12px', textAlign: 'right' }}>Amount Paid</th>
+                <th style={{ padding: '12px', textAlign: 'right' }}>Amount Left</th>
                 <th style={{ padding: '12px', textAlign: 'center' }}>Last Payment Date</th>
               </tr>
             </thead>
@@ -154,6 +165,9 @@ export default function FamiliesTable({ accessToken, onSelectFamily }) {
                     </td>
                     <td style={{ padding: '12px', textAlign: 'right', color: '#000' }}>
                       {formatCurrency(family.total_amount_paid)}
+                    </td>
+                    <td style={{ padding: '12px', textAlign: 'right', color: '#000' }}>
+                      {formatCurrency(getPendingAmount(family.category, family.total_amount_paid))}
                     </td>
                     <td style={{ padding: '12px', textAlign: 'center', color: '#000' }}>
                       {formatDate(family.last_payment_date)}
