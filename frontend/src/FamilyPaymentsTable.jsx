@@ -95,7 +95,7 @@ function FamilyPaymentsTable({ familyId, familyName, onBack }) {
   if (!payments || payments.length === 0) {
     return (
       <div className="container">
-        <div className="d-flex justify-content-between align-items-center mt-3 mb-2">
+        <div className="d-flex gap-2 justify-content-between align-items-center mt-3 mb-2">
           <button className="btn btn-secondary" type="button" onClick={handleBackClick}>
             ← Back to Families
           </button>
@@ -129,7 +129,7 @@ function FamilyPaymentsTable({ familyId, familyName, onBack }) {
 
   return (
     <div className="container">
-      <div className="d-flex justify-content-between align-items-center mt-3 mb-2">
+      <div className="d-flex gap-2 justify-content-between align-items-center mt-3 mb-2">
         <button className="btn btn-secondary" type="button" onClick={handleBackClick}>
           ← Back to Families
         </button>
