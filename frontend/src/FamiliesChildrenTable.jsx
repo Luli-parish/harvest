@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import api from './axios'
+import { exportToCSV } from './utilities/csv'
 
 export default function FamiliesChildrenTable() {
   const [children, setChildren] = useState([])
@@ -28,6 +29,14 @@ export default function FamiliesChildrenTable() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleExport = () => {
+    const rows = [
+      ['Child Name', 'Family Name'],
+      ...filteredChildren.map((child) => [child.full_name || '', child.family_name || 'N/A']),
+    ]
+    exportToCSV(rows, 'children-summary.csv')
   }
 
   if (loading) {
@@ -76,6 +85,16 @@ export default function FamiliesChildrenTable() {
               fontSize: '0.9rem',
             }}
           />
+        </div>
+        <div className="d-flex justify-content-end p-3 border-bottom">
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-primary"
+            onClick={handleExport}
+            disabled={filteredChildren.length === 0}
+          >
+            Export CSV
+          </button>
         </div>
         <div className="table-responsive">
           <table className="table table-hover mb-0" style={{ color: '#000' }}>
