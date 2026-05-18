@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import api from './axios'
-import { exportToCSV } from './utilities/csv'
+import { exportToCSV, exportToXLSX } from './utilities/csv'
 
 export default function FamiliesChildrenTable() {
   const [children, setChildren] = useState([])
@@ -31,12 +31,19 @@ export default function FamiliesChildrenTable() {
     }
   }
 
-  const handleExport = () => {
-    const rows = [
-      ['Child Name', 'Family Name'],
-      ...filteredChildren.map((child) => [child.full_name || '', child.family_name || 'N/A']),
-    ]
+  const getExportRows = () => [
+    ['Child Name', 'Family Name'],
+    ...filteredChildren.map((child) => [child.full_name || '', child.family_name || 'N/A']),
+  ]
+
+  const handleExportCSV = () => {
+    const rows = getExportRows()
     exportToCSV(rows, 'children-summary.csv')
+  }
+
+  const handleExportXLSX = () => {
+    const rows = getExportRows()
+    exportToXLSX(rows, 'children-summary.xlsx', 'Children Summary')
   }
 
   if (loading) {
@@ -90,10 +97,18 @@ export default function FamiliesChildrenTable() {
           <button
             type="button"
             className="btn btn-sm btn-outline-primary"
-            onClick={handleExport}
+            onClick={handleExportCSV}
             disabled={filteredChildren.length === 0}
           >
             Export CSV
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-success ms-2"
+            onClick={handleExportXLSX}
+            disabled={filteredChildren.length === 0}
+          >
+            Export XLSX
           </button>
         </div>
         <div className="table-responsive">

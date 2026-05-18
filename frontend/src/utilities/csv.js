@@ -1,3 +1,5 @@
+import * as XLSX from 'xlsx'
+
 export function exportToCSV(rows, filename = 'children-summary.csv') {
   const csvContent = rows
     .map((row) => row.map((value) => `"${String(value ?? '').replace(/"/g, '""')}"`).join(','))
@@ -13,4 +15,12 @@ export function exportToCSV(rows, filename = 'children-summary.csv') {
   link.click()
   document.body.removeChild(link)
   URL.revokeObjectURL(url)
+}
+
+export function exportToXLSX(rows, filename = 'children-summary.xlsx', sheetName = 'Sheet1') {
+  const worksheet = XLSX.utils.aoa_to_sheet(rows)
+  const workbook = XLSX.utils.book_new()
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, sheetName)
+  XLSX.writeFile(workbook, filename)
 }
